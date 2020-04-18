@@ -5,3 +5,6 @@ Square payment module for the PHP Appserver.
 Square Sdks: https://developer.squareup.com/docs/sdks
 
 Square Api Tester: https://developer.squareup.com/reference/square/payments-api/
+
+# Sample Code
+https://connect.squareupsandbox.com
