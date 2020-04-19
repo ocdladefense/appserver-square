@@ -3,7 +3,7 @@ Square payment module for the PHP Appserver.
 
 
 # Instructions
-1. Sign up for a [Square developer account](https://squareup.com/login?app=developer&return_to=https://developer.squareup.com/reference/square/payments-api/list-payments/explorer).
+1. Sign up for a [Square developer account](https://squareup.com/signup?v=developers).
 
 
 # Links & Documentation
