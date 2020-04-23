@@ -25,34 +25,34 @@ class SquareModule extends Module {
       "Order.php",
       "ShoppingCart.php"
     );
-}
+  }
 
-public function GetPayments(){
-  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+  public function GetPayments(){
+    $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
 
-  $version = new HttpHeader("Square-Version" , "2020-03-25");
-  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
+    $version = new HttpHeader("Square-Version" , "2020-03-25");
+    $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
 
-  $request->addHeader($version);
-  $request->addHeader($authorization);
+    $request->addHeader($version);
+    $request->addHeader($authorization);
 
-  $config = array(
-    // "cainfo" => BASE_PATH . "/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem",
-    "verbose" => true,
-    // "encoding" => '',
-    "returntransfer" => true,
-    "useragent"	=> "Mozilla/5.0"
-  );
-  
-  $http = new Http($config);
-  $response = $http->send($request);
+    $config = array(
+      // "cainfo" => BASE_PATH . "/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem",
+      "verbose" => true,
+      // "encoding" => '',
+      "returntransfer" => true,
+      "useragent"	=> "Mozilla/5.0"
+    );
+    
+    $http = new Http($config);
+    $response = $http->send($request);
 
-  var_dump($request);
-  var_dump($response);
+    var_dump($request);
+    var_dump($response);
 
 
-  exit;
-}
+    exit;
+  }
 
 // SQUARE API ENDPOINTS NEEDED
 /*
