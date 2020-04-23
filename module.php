@@ -10,18 +10,25 @@ use Http\SigningKey as SigningKey;
 
 class SquareModule extends Module {
 
-
   public function __construct() {
+    
+    $this->name = "square";
+    
     $this->routes = array(
-        "square" => array(
-            "callback" => "getPayments"
-            )
-        );
+      "square" => array(
+        "callback" => "getPayments"
+      )
+    );
+
+    $this->files = array(
+      "Customer.php",
+      "Order.php",
+      "ShoppingCart.php"
+    );
 }
 
 public function GetPayments(){
-  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments?total=25&begin_time=452452&end_time=2452&
-  sort_order=4142&cursor=dfsdfg&location_id=42&last_4=452&card_brand=bvzdfg");
+  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
 
   $version = new HttpHeader("Square-Version" , "2020-03-25");
   $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
@@ -46,6 +53,39 @@ public function GetPayments(){
 
   exit;
 }
+
+// SQUARE API ENDPOINTS NEEDED
+/*
+  Create Customer
+  Retrieve Customer
+  Update Customer
+  Add Customer Card
+  Delete Customer Card
+
+  Create Payment
+
+  ---------- CONTEXT OBJECTS ----------
+
+  Current Customer: Currently logged in customer
+
+  Shopping Cart: Contains 0 or more products at the price that was available when the customer added the product to their cart
+
+    $cart = new ShoppingCart();
+
+                (Need a refresh method)
+                refresh() {
+                  // evaluate all items in customer cart
+                  // alert customer 
+
+                  // compare price in customers cart with most current price
+                }
+
+  Order: Must fufill every line item in order (Square API createPayment(order))
+
+
+  Start with a template file with hardcoded API info and submit button
+
+*/
 
 //AddParameter(), RemoveParameter()
 
