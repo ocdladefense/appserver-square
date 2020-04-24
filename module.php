@@ -20,8 +20,11 @@ class SquareModule extends Module {
 }
 
 public function GetPayments(){
-  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments?total=25&begin_time=452452&end_time=2452&
-  sort_order=4142&cursor=dfsdfg&location_id=42&last_4=452&card_brand=bvzdfg");
+  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+
+  $request->addParameter("total", "25");
+  $request->addParameter("card_brand", "VISA");
+
 
   $version = new HttpHeader("Square-Version" , "2020-03-25");
   $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
@@ -44,9 +47,10 @@ public function GetPayments(){
   var_dump($response);
 
 
+
   exit;
 }
 
-//AddParameter(), RemoveParameter()
+
 
 }

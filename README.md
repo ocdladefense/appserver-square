@@ -16,6 +16,8 @@ Square PHP SDK: https://developer.squareup.com/docs/sdks/php
 
 Square API Explorer: https://developer.squareup.com/reference/square/payments-api/
 
+Square Payment Proccessing Example in PHP: https://github.com/square/connect-api-examples/tree/master/connect-examples/v2/php_payment#setup
+
 
 # Sample Code
 https://connect.squareupsandbox.com
