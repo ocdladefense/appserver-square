@@ -10,46 +10,85 @@ use Http\SigningKey as SigningKey;
 
 class SquareModule extends Module {
 
-
   public function __construct() {
+    
+    $this->name = "square";
+    
     $this->routes = array(
-        "square" => array(
-            "callback" => "getPayments"
-            )
-        );
-}
+      "square" => array(
+        "callback" => "getPayments"
+      )
+    );
 
-public function GetPayments(){
-  $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+    $this->files = array(
+      "Customer.php",
+      "Order.php",
+      "ShoppingCart.php"
+    );
+  }
 
-  $request->addParameter("total", "25");
-  $request->addParameter("card_brand", "VISA");
+  public function GetPayments(){
+    $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+
+    $request->addParameter("total", "25");
+    $request->addParameter("card_brand", "VISA");
+
+    $version = new HttpHeader("Square-Version" , "2020-03-25");
+    $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
+
+    $request->addHeader($version);
+    $request->addHeader($authorization);
+
+    $config = array(
+      // "cainfo" => BASE_PATH . "/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem",
+      "verbose" => true,
+      // "encoding" => '',
+      "returntransfer" => true,
+      "useragent"	=> "Mozilla/5.0"
+    );
+    
+    $http = new Http($config);
+    $response = $http->send($request);
+
+    var_dump($request);
+    var_dump($response);
 
 
-  $version = new HttpHeader("Square-Version" , "2020-03-25");
-  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
+    exit;
+  }
 
-  $request->addHeader($version);
-  $request->addHeader($authorization);
+// SQUARE API ENDPOINTS NEEDED
+/*
+  Create Customer
+  Retrieve Customer
+  Update Customer
+  Add Customer Card
+  Delete Customer Card
 
-  $config = array(
-    // "cainfo" => BASE_PATH . "/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem",
-    "verbose" => true,
-    // "encoding" => '',
-    "returntransfer" => true,
-    "useragent"	=> "Mozilla/5.0"
-  );
-  
-  $http = new Http($config);
-  $response = $http->send($request);
+  Create Payment
 
-  var_dump($request);
-  var_dump($response);
+  ---------- CONTEXT OBJECTS ----------
+
+  Current Customer: Currently logged in customer
+
+  Shopping Cart: Contains 0 or more products at the price that was available when the customer added the product to their cart
+
+    $cart = new ShoppingCart();
+
+                (Need a refresh method)
+                refresh() {
+                  // evaluate all items in customer cart
+                  // alert customer 
+
+                  // compare price in customers cart with most current price
+                }
+
+  Order: Must fufill every line item in order (Square API createPayment(order))
 
 
+  Start with a template file with hardcoded API info and submit button
 
-  exit;
-}
+*/
 
 
 
