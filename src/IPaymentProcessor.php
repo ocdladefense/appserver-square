@@ -1,5 +1,6 @@
 <?php
 
+//IPaymentProcessor represents abstract interactions between module and payment processor
 interface IPaymentProcessor {
     public function sendPayment();
 
@@ -14,3 +15,6 @@ interface IPaymentProcessor {
     public function getTransaction();
 
 }
+
+
+

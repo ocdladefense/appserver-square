@@ -15,23 +15,30 @@ class SquareModule extends Module {
     $this->name = "square";
     
     $this->routes = array(
-      "square" => array(
-        "callback" => "getPayments"
+      "create-customer" => array(
+        "callback" => "CreateSquareCustomer"
+      ),
+      "customer" => array(
+        "callback" => "GetSquareCustomerInfo"
+      ),
+      "payments" => array(
+        "callback" => "GetPayments"
       )
     );
 
     $this->files = array(
       "Customer.php",
+      "SquareCustomer.php",
       "Order.php",
       "ShoppingCart.php"
     );
   }
 
   public function GetPayments(){
-    $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+    $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments/" ."vjyG0eVaNRL9WdFeFvAXdJNe2VcZY");
 
-    $request->addParameter("total", "25");
-    $request->addParameter("card_brand", "VISA");
+    //$request->addParameter("total", "25");
+    //$request->addParameter("card_brand", "VISA");
 
     $version = new HttpHeader("Square-Version" , "2020-03-25");
     $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
@@ -39,20 +46,30 @@ class SquareModule extends Module {
     $request->addHeader($version);
     $request->addHeader($authorization);
 
+    //print "<pre>" .print_r($request->getHeaders(), true) ."</pre>";
+
     $config = array(
-      // "cainfo" => BASE_PATH . "/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem",
-      "verbose" => true,
-      // "encoding" => '',
-      "returntransfer" => true,
-      "useragent"	=> "Mozilla/5.0"
+      // "cainfo" => null,
+			// "verbose" => false,
+			// "stderr" => null,
+			// "encoding" => '',
+			"returntransfer" => true,
+			// "httpheader" => null,
+			"useragent" => "Mozilla/5.0",
+			// "header" => 1,
+			// "header_out" => true,
+			"followlocation" => true,
+			"ssl_verifyhost" => false,
+			"ssl_verifypeer" => false
     );
     
     $http = new Http($config);
     $response = $http->send($request);
 
+   // print "<pre>" .print_r($http->GetSessionLog(), true) ."</pre>";
+
     var_dump($request);
     var_dump($response);
-
 
     exit;
   }
@@ -90,6 +107,82 @@ class SquareModule extends Module {
 
 */
 
+//Parameter will be a customer object
+public function GetSquareCustomerInfo($squareCustomerId){
 
+  $getCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/" . $squareCustomerId);
+
+  $version = new HttpHeader("Square-Version" , "2020-04-22");
+  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
+
+  $getCustRequest->addHeader($version);
+  $getCustRequest->addHeader($authorization);
+
+  $config = array(
+    // "cainfo" => null,
+			// "verbose" => false,
+			// "stderr" => null,
+			// "encoding" => '',
+			"returntransfer" => true,
+			// "httpheader" => null,
+			"useragent" => "Mozilla/5.0",
+			// "header" => 1,
+			// "header_out" => true,
+			"followlocation" => true,
+			"ssl_verifyhost" => false,
+			"ssl_verifypeer" => false
+  );
+  
+  $http = new Http($config);
+  $response = $http->send($getCustRequest);
+
+  var_dump($getCustRequest);
+  var_dump($response);
+
+
+  return $customer;
+}
+
+//Accepts Customer object
+public function CreateSquareCustomer(/* $customer */){
+  //Customer for testing
+  $customer = new SquareCustomer("Foo","Foob");
+
+  $custJson = json_encode($customer);
+
+  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/");
+
+  $createCustRequest->setPost();
+  $createCustRequest->setBody($custJson);
+
+  $version = new HttpHeader("Square-Version" , "2020-04-22");
+  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY); 
+
+  $createCustRequest->addHeader($version);
+  $createCustRequest->addHeader($authorization);
+
+  $config = array(
+    // "cainfo" => null,
+			// "verbose" => false,
+			// "stderr" => null,
+			// "encoding" => '',
+			"returntransfer" => true,
+			// "httpheader" => null,
+			"useragent" => "Mozilla/5.0",
+			// "header" => 1,
+			// "header_out" => true,
+			"followlocation" => true,
+			"ssl_verifyhost" => false,
+			"ssl_verifypeer" => false
+  );
+  
+  $http = new Http($config);
+  $response = $http->send($createCustRequest);
+
+  var_dump($createCustRequest);
+  var_dump($response);
+
+  exit;
+}
 
 }
