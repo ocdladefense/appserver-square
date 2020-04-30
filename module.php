@@ -10,6 +10,8 @@ use Http\SigningKey as SigningKey;
 
 class SquareModule extends Module {
 
+
+
   public function __construct() {
     
     $this->name = "square";
@@ -107,7 +109,6 @@ class SquareModule extends Module {
 
 */
 
-//Parameter will be a customer object
 public function GetSquareCustomerInfo($squareCustomerId){
 
   $getCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/" . $squareCustomerId);
@@ -143,8 +144,9 @@ public function GetSquareCustomerInfo($squareCustomerId){
   return $customer;
 }
 
-//Accepts Customer object
+//Will accept Customer object
 public function CreateSquareCustomer(/* $customer */){
+
   //Customer for testing
   $customer = new SquareCustomer("Foo","Foob");
 
@@ -162,7 +164,7 @@ public function CreateSquareCustomer(/* $customer */){
   $createCustRequest->addHeader($authorization);
 
   $config = array(
-    // "cainfo" => null,
+      // "cainfo" => null,
 			// "verbose" => false,
 			// "stderr" => null,
 			// "encoding" => '',
@@ -185,4 +187,46 @@ public function CreateSquareCustomer(/* $customer */){
   exit;
 }
 
+//Will accept Customer object
+public function Createa(/* $customer */){
+
+  //Customer for testing
+  $customer = new SquareCustomer("Foo","Foob");
+
+  $custJson = json_encode($customer);
+
+  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/");
+
+  $createCustRequest->setPost();
+  $createCustRequest->setBody($custJson);
+
+  $version = new HttpHeader("Square-Version" , "2020-04-22");
+  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY); 
+
+  $createCustRequest->addHeader($version);
+  $createCustRequest->addHeader($authorization);
+
+  $config = array(
+      // "cainfo" => null,
+			// "verbose" => false,
+			// "stderr" => null,
+			// "encoding" => '',
+			"returntransfer" => true,
+			// "httpheader" => null,
+			"useragent" => "Mozilla/5.0",
+			// "header" => 1,
+			// "header_out" => true,
+			"followlocation" => true,
+			"ssl_verifyhost" => false,
+			"ssl_verifypeer" => false
+  );
+  
+  $http = new Http($config);
+  $response = $http->send($createCustRequest);
+
+  var_dump($createCustRequest);
+  var_dump($response);
+
+  exit;
+}
 }

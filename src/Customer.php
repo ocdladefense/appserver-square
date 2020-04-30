@@ -6,7 +6,6 @@ abstract class Customer implements \JsonSerializable {
     private $address;
     private $birthday;
     private $email;
-    //userID is the reference ID square will use to find the customer, not the SquareID
     //ID for customer's user in php appserver
     private $userId;
     //ID for customer's contact record in CRM
