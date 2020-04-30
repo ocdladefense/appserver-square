@@ -13,6 +13,8 @@ class SquareModule extends Module {
 
 
   public function __construct() {
+
+    parent:: __construct();
     
     $this->name = "square";
     
@@ -35,6 +37,22 @@ class SquareModule extends Module {
       "ShoppingCart.php"
     );
   }
+
+  public function squareModRoutes(){
+		$cybersourceModRoutes = array(
+				"transaction" => array(
+						"callback" => "getTransaction",
+						"content-type" => "application/json", 
+						"files" => array()
+				),
+				"payment" => array(
+					"callback" => "processPayment",
+					"content-type" => "application/json"
+				),
+				""
+		);
+		return $squareModRoutes;
+	}
 
   public function GetPayments(){
     $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments/" ."vjyG0eVaNRL9WdFeFvAXdJNe2VcZY");
