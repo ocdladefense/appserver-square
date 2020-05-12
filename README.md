@@ -18,9 +18,9 @@ Square API Explorer: https://developer.squareup.com/reference/square/payments-ap
 
 Square Payment Proccessing Example in PHP: https://github.com/square/connect-api-examples/tree/master/connect-examples/v2/php_payment#setup
 
-Integrate Square Payments In a Website: https://developer.squareup.com/docs/payment-form/payment-form-walkthrough 
+Square, [Cookbook on saving a pyment](https://developer.squareup.com/docs/customers-api/cookbook/save-cards-on-file)
 
-SqPaymentForm(Square JS Library) Documentation Jhttps://developer.squareup.com/docs/api/paymentform#navsection-paymentform
+Square, [Overview of Square payments in your website](https://developer.squareup.com/docs/payment-form/overview)
 
 
 # Sample Code
