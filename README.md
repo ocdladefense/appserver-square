@@ -18,6 +18,10 @@ Square API Explorer: https://developer.squareup.com/reference/square/payments-ap
 
 Square Payment Proccessing Example in PHP: https://github.com/square/connect-api-examples/tree/master/connect-examples/v2/php_payment#setup
 
+Integrate Square Payments In a Website: https://developer.squareup.com/docs/payment-form/payment-form-walkthrough 
+
+SqPaymentForm(Square JS Library) Documentation Jhttps://developer.squareup.com/docs/api/paymentform#navsection-paymentform
+
 
 # Sample Code
 https://connect.squareupsandbox.com

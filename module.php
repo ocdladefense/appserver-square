@@ -22,6 +22,9 @@ class SquareModule extends Module {
       "create-customer" => array(
         "callback" => "CreateSquareCustomer"
       ),
+      "create-customer-form" => array(
+        "callback" => "CreateCustomerForm"
+      ),
       "customer" => array(
         "callback" => "GetSquareCustomerInfo"
       ),
@@ -127,6 +130,7 @@ class SquareModule extends Module {
 
 */
 
+
 public function GetSquareCustomerInfo($squareCustomerId){
 
   $getCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/" . $squareCustomerId);
@@ -162,25 +166,69 @@ public function GetSquareCustomerInfo($squareCustomerId){
   return $customer;
 }
 
-//Will accept Customer object
-public function CreateSquareCustomer(/* $customer */){
+public function CreateCustomerForm(){
+  if(isset($_SESSION["customer"])){
+    $customer = $_SESSION["customer"];
+  }
+
+  Template::addPath(__DIR__ . "/templates");
+  $template = Template::loadTemplate("webconsole");
+  $createCustomerForm = Template::renderTemplate("create-customer", array("create" => array()));
+
+
+  // ... and custom styles.
+  $css = array(
+    "active" => true,
+    "href" => "/modules/square/css/styles.css",
+  );
+
+  $template->addStyle($css);
+
+  // include all js files
+  $js = array(
+    array(
+      "src" => "/modules/square/src/Validation.js"
+    )
+  );
+
+  $template->addScripts($js);
+
+  return $template->render(array(
+    "defaultStageClass" => "not-home", 
+    "content" => $createCustomerForm,
+    "doInit" => false
+  ));
+
+
+}
+
+public function CreateSquareCustomer(){
+
+  $body = $this->request->getBody();
+
+  var_dump($body);
 
   //Customer for testing
-  $customer = new SquareCustomer("Foo","Foob");
+  $customer = new SquareCustomer($body["fname"],$body["lname"]);
 
-  $custJson = json_encode($customer);
-
+  $custJson = json_encode($customer->jsonSerialize());
+  var_dump($custJson);
   $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/");
 
+  //Will need to call setmethod method and pass in PUT will replace default GET to PUT
+  //Upsert square customer. checks for id
   $createCustRequest->setPost();
   $createCustRequest->setBody($custJson);
 
   $version = new HttpHeader("Square-Version" , "2020-04-22");
   $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY); 
+  $contentType = new HttpHeader("Content-Type" , "application/json"); 
+
 
   $createCustRequest->addHeader($version);
   $createCustRequest->addHeader($authorization);
-
+  $createCustRequest->addHeader($contentType);
+  var_dump($createCustRequest->getHeaders());
   $config = array(
       // "cainfo" => null,
 			// "verbose" => false,
@@ -197,10 +245,25 @@ public function CreateSquareCustomer(/* $customer */){
   );
   
   $http = new Http($config);
-  $response = $http->send($createCustRequest);
 
-  var_dump($createCustRequest);
-  var_dump($response);
+
+  $response = $http->send($createCustRequest);
+  print("<pre>" .print_r($http->getSessionLog(), true). "</pre>");
+  var_dump($response->getHeaders());
+
+  $customerJson = json_decode($response->getBody());
+  var_dump($response->getBody());
+  var_dump($customerJson);
+
+/*   <?php $_SESSION["customer"]->getFirstName() ?>
+ */
+
+  //Static call
+  $_SESSION["customer"] = SquareCustomer::fromJson($customerJson); 
+  //var_dump($customerJson);
+  //var_dump($createCustRequest);
+  //var_dump($response);
+  //var_dump($_SESSION);
 
   exit;
 }

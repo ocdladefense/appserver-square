@@ -13,6 +13,17 @@ class SquareCustomer extends Customer{
             "family_name" => $this->lastName
         );
     }
+    public static function fromJson($obj){
+        $firstName = $obj->given_name;
+        $lastName = $obj->family_name;
+        $processorId = $obj->id;
+
+        $cust = new SquareCustomer($firstName, $lastName);
+
+        $cust->setProcessorId($processorId);
+
+        return $cust;
+    }
 
 }
 
