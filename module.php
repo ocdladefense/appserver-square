@@ -28,6 +28,9 @@ class SquareModule extends Module {
       "customer" => array(
         "callback" => "GetSquareCustomerInfo"
       ),
+      "payment-form" => array(
+        "callback" => "SubmitPaymentForm"
+      ),
       "payments" => array(
         "callback" => "GetPayments"
       )
@@ -97,6 +100,43 @@ class SquareModule extends Module {
     exit;
   }
 
+  public function SubmitPaymentForm(){
+    print __DIR__;
+    // dotenv is used to read from the '.env' file created for credentials
+    $dotenv = Dotenv\Dotenv::create(__DIR__);
+    $dotenv->load();
+ 
+    Template::addPath(__DIR__ . "/templates");
+    $template = Template::loadTemplate("webconsole");
+    $paymentForm = Template::renderTemplate("payment-form", array("create" => array()));
+  
+  
+    // ... and custom styles.
+    $css = array(
+      "active" => true,
+      "href" => "/modules/square/css/sq-payment-form.css",
+    );
+
+    $template->addStyle($css);
+  
+    // include all js files
+    $js = array(
+      array(
+        "src" => "/modules/square/js/sq-payment-form.js"
+      )
+    );
+  
+    $template->addScripts($js);
+  
+    return $template->render(array(
+      "defaultStageClass" => "not-home", 
+      "content" => $paymentForm,
+      "doInit" => false
+    ));
+
+
+    
+  }
 // SQUARE API ENDPOINTS NEEDED
 /*
   Create Customer
@@ -208,15 +248,22 @@ public function CreateSquareCustomer(){
 
   var_dump($body);
 
-  //Customer for testing
+  if($_SESSION["customer"]){
+    $sessionCustomer = $_SESSION["customer"];
+  }
+  var_dump($sessionCustomer);
+ // if($sessionCustomer->processorId)
+ 
+
   $customer = new SquareCustomer($body["fname"],$body["lname"]);
 
   $custJson = json_encode($customer->jsonSerialize());
   var_dump($custJson);
-  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/");
+  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers");
 
   //Will need to call setmethod method and pass in PUT will replace default GET to PUT
   //Upsert square customer. checks for id
+
   $createCustRequest->setPost();
   $createCustRequest->setBody($custJson);
 
@@ -255,15 +302,14 @@ public function CreateSquareCustomer(){
   var_dump($response->getBody());
   var_dump($customerJson);
 
-/*   <?php $_SESSION["customer"]->getFirstName() ?>
- */
 
   //Static call
   $_SESSION["customer"] = SquareCustomer::fromJson($customerJson); 
   //var_dump($customerJson);
   //var_dump($createCustRequest);
   //var_dump($response);
-  //var_dump($_SESSION);
+  var_dump($_SESSION);
+
 
   exit;
 }

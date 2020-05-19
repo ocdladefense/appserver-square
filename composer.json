@@ -1,0 +1,8 @@
+{
+    "name": "square/server",
+    "description": "A PHP application server.",
+    "require": {
+      "square/connect": "2.20190814.0",
+      "vlucas/phpdotenv": "^3.3"
+    }
+}
