@@ -9,8 +9,12 @@ class SquareCustomer extends Customer{
     public function jsonSerialize()
     {
         return array(
-            "given_name" => $this->firstName,
-            "family_name" => $this->lastName
+            "given_name"    => $this->firstName,
+            "family_name"   => $this->lastName,
+            "address"       => $this->address,
+            "email_address" => $this->email,
+            "birthday"      => $this->birthday,
+            "customer_id"   => $this->processorId
         );
     }
     public static function fromJson($obj){

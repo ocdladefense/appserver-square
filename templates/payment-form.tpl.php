@@ -29,7 +29,7 @@
         Learn more about how to setup the server component of the payment form here:
         https://developer.squareup.com/docs/payments-api/overview
       -->
-      <form id="nonce-form" novalidate action="/process-card.php" method="post">
+      <form id="nonce-form" novalidate action="/process-payment" method="post">
         <div class="sq-field">
           <label class="sq-label">Card Number</label>
           <div id="sq-card-number"></div>

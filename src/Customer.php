@@ -30,6 +30,14 @@ abstract class Customer implements \JsonSerializable {
         $this->processorId = $processorId;
     }
 
+    public function getProcessorId(){
+        return $this->processorId;
+    }
+
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+
     public function getName() {
         return $firstName . $lastName;
     }

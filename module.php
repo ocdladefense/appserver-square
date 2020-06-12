@@ -20,7 +20,7 @@ class SquareModule extends Module {
     
     $this->routes = array(
       "create-customer" => array(
-        "callback" => "CreateSquareCustomer"
+        "callback" => "CreateOrUpdateSquareCustomer"
       ),
       "create-customer-form" => array(
         "callback" => "CreateCustomerForm"
@@ -31,6 +31,9 @@ class SquareModule extends Module {
       "payment-form" => array(
         "callback" => "SubmitPaymentForm"
       ),
+      "process-payment" => array(
+        "callback" => "ProcessPayment"
+      ),
       "payments" => array(
         "callback" => "GetPayments"
       )
@@ -40,7 +43,8 @@ class SquareModule extends Module {
       "Customer.php",
       "SquareCustomer.php",
       "Order.php",
-      "ShoppingCart.php"
+      "ShoppingCart.php",
+      "SquarePayment.php"
     );
   }
 
@@ -58,7 +62,69 @@ class SquareModule extends Module {
 				""
 		);
 		return $squareModRoutes;
-	}
+  }
+  public function ProcessPayment(){
+    $body = $this->request->getBody();
+
+    var_dump($body);
+
+    $cardNonce = $body->nonce;
+
+    $processPaymentrequest = new HttpRequest("https://connect.squareupsandbox.com/v2/payments");
+
+    //Shopping cart with 1 item for testing
+    $cart = new ShoppingCart;
+    $cart->setTotal(1.00);
+    $cart->setCurrency("USD");
+
+
+    $payment = new SquarePayment($cardNonce);
+    var_dump($payment);
+    $payment->setMoney($cart);
+
+    $processPaymentrequest->setPost();
+    $processPaymentrequest->setBody($payment->toJson());
+
+    $version = new HttpHeader("Square-Version" , "2020-03-25");
+    $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY);
+    $contentType = new HttpHeader("Content-Type" , "application/json");
+
+
+    $processPaymentrequest->addHeader($version);
+    $processPaymentrequest->addHeader($authorization);
+    $processPaymentrequest->addHeader($contentType);
+
+
+    //print "<pre>" .print_r($request->getHeaders(), true) ."</pre>";
+
+    $config = array(
+      // "cainfo" => null,
+			// "verbose" => false,
+			// "stderr" => null,
+			// "encoding" => '',
+			"returntransfer" => true,
+			// "httpheader" => null,
+			"useragent" => "Mozilla/5.0",
+			// "header" => 1,
+			// "header_out" => true,
+			"followlocation" => true,
+			"ssl_verifyhost" => false,
+			"ssl_verifypeer" => false
+    );
+    
+    $http = new Http($config);
+    
+    var_dump($processPaymentrequest->getBody());
+
+    $response = $http->send($processPaymentrequest);
+
+   // print "<pre>" .print_r($http->GetSessionLog(), true) ."</pre>";
+
+    var_dump($processPaymentrequest);
+    var_dump($response);
+
+    exit;
+  }
 
   public function GetPayments(){
     $request = new HttpRequest("https://connect.squareupsandbox.com/v2/payments/" ."vjyG0eVaNRL9WdFeFvAXdJNe2VcZY");
@@ -207,10 +273,6 @@ public function GetSquareCustomerInfo($squareCustomerId){
 }
 
 public function CreateCustomerForm(){
-  if(isset($_SESSION["customer"])){
-    $customer = $_SESSION["customer"];
-  }
-
   Template::addPath(__DIR__ . "/templates");
   $template = Template::loadTemplate("webconsole");
   $createCustomerForm = Template::renderTemplate("create-customer", array("create" => array()));
@@ -227,7 +289,7 @@ public function CreateCustomerForm(){
   // include all js files
   $js = array(
     array(
-      "src" => "/modules/square/src/Validation.js"
+      "src" => "/modules/square/js/validation.js"
     )
   );
 
@@ -242,40 +304,44 @@ public function CreateCustomerForm(){
 
 }
 
-public function CreateSquareCustomer(){
-
+public function CreateOrUpdateSquareCustomer(){
   $body = $this->request->getBody();
 
+  var_dump(($_SESSION["customer"]));
+
+  $cust = $_SESSION["customer"];
+
+  var_dump($cust);
   var_dump($body);
 
-  if($_SESSION["customer"]){
-    $sessionCustomer = $_SESSION["customer"];
+  //If _SESSION contains a customer object, set to PUT and change endpoint
+  if(isset($_SESSION["customer"]) && $cust->getProcessorId() != null ){
+     $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/" .$cust->getProcessorId());
+     $createCustRequest->setPut();
+   }
+  else{
+    $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers"); 
+    $createCustRequest->setPost();
   }
-  var_dump($sessionCustomer);
- // if($sessionCustomer->processorId)
- 
+  
+  var_dump($createCustRequest);
 
-  $customer = new SquareCustomer($body["fname"],$body["lname"]);
+  $customer = new SquareCustomer($body->fname,$body->lname);
+  $customer->setEmail($body->email);
+  //$custJson = $customer->jsonSerialize();
 
   $custJson = json_encode($customer->jsonSerialize());
-  var_dump($custJson);
-  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers");
 
-  //Will need to call setmethod method and pass in PUT will replace default GET to PUT
-  //Upsert square customer. checks for id
-
-  $createCustRequest->setPost();
   $createCustRequest->setBody($custJson);
 
   $version = new HttpHeader("Square-Version" , "2020-04-22");
   $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY); 
   $contentType = new HttpHeader("Content-Type" , "application/json"); 
 
-
   $createCustRequest->addHeader($version);
   $createCustRequest->addHeader($authorization);
   $createCustRequest->addHeader($contentType);
-  var_dump($createCustRequest->getHeaders());
+
   $config = array(
       // "cainfo" => null,
 			// "verbose" => false,
@@ -310,49 +376,6 @@ public function CreateSquareCustomer(){
   //var_dump($response);
   var_dump($_SESSION);
 
-
-  exit;
-}
-
-//Will accept Customer object
-public function Createa(/* $customer */){
-
-  //Customer for testing
-  $customer = new SquareCustomer("Foo","Foob");
-
-  $custJson = json_encode($customer);
-
-  $createCustRequest = new HttpRequest("https://connect.squareupsandbox.com/v2/customers/");
-
-  $createCustRequest->setPost();
-  $createCustRequest->setBody($custJson);
-
-  $version = new HttpHeader("Square-Version" , "2020-04-22");
-  $authorization = new HttpHeader("Authorization" , "Bearer " .API_KEY); 
-
-  $createCustRequest->addHeader($version);
-  $createCustRequest->addHeader($authorization);
-
-  $config = array(
-      // "cainfo" => null,
-			// "verbose" => false,
-			// "stderr" => null,
-			// "encoding" => '',
-			"returntransfer" => true,
-			// "httpheader" => null,
-			"useragent" => "Mozilla/5.0",
-			// "header" => 1,
-			// "header_out" => true,
-			"followlocation" => true,
-			"ssl_verifyhost" => false,
-			"ssl_verifypeer" => false
-  );
-  
-  $http = new Http($config);
-  $response = $http->send($createCustRequest);
-
-  var_dump($createCustRequest);
-  var_dump($response);
 
   exit;
 }

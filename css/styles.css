@@ -1,0 +1,11 @@
+.form-item-required label:after{
+    content: "*";
+    color: red;
+}
+.form .error-message {
+    color: red;
+    display: none;
+}
+.has-errors .error-message{
+    display: block;
+}
