@@ -6,7 +6,7 @@ Square payment module for the PHP Appserver.
 1. Sign up for a [Square developer account](https://squareup.com/signup?v=developers).
 2. Login to your developer account.
 3. Create a new application and give it a name.
-4. Genearate a key for your app: save this information in your PHP appserver's config.php file.
+4. Generate a key for your app: save this information in your PHP appserver's config.php file.
 5. Test your API key using the Square API Explorer (see links and documentation.)
 
 # Links & Documentation
