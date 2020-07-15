@@ -1,19 +1,28 @@
 <?php
 
-//Customer represents an abstract customer type 
+// Customer represents an abstract customer type 
 abstract class Customer implements \JsonSerializable {
 
     protected $address;
+    
     protected $birthday;
+    
     protected $email;
-    //ID for customer's user in php appserver
+    
+    // ID for customer's user in php appserver
     protected $userId;
-    //ID for customer's contact record in CRM
+    
+    // ID for customer's contact record in CRM
     protected $CRMId;
-    //ID for remote processor system
+    
+    // ID for remote processor system
     protected $processorId;
+    
     protected $firstName;
+    
     protected $lastName;
+
+
 
     //New unique ID created when a customer is made
     public function __construct($firstName, $lastName) {
@@ -61,9 +70,9 @@ abstract class Customer implements \JsonSerializable {
     public function getUserId(){
         return $userId;
     }
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
+    
+    public function jsonSerialize() {
+        return json_encode(get_object_vars($this));
     }
   
 }
