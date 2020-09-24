@@ -6,7 +6,8 @@ use Http\HttpRequest as HttpRequest;
 use Http\HttpMessage as HttpMessage;
 use Http\SigningRequest as SigningRequest;
 use Http\SigningKey as SigningKey;
-
+use \Html\HtmlLink;
+use function \Html\createElement as createElement;
 
 
 
@@ -256,7 +257,18 @@ class SquareModule extends Module {
 		return $customer;
 	}
 
-	public function CreateCustomerForm(){
+	public function OrderSummary(){
+		$tpl = new CartTemplate($_SESSION["cart"]);
+		$tpl->addPath(__DIR__ . "/templates");
+		return $tpl;
+	}
+
+	public function CreateOrUpdateCustomerForm(){
+
+		//$tpl = new CartTemplate();
+		//($_SESSION["customer"]);
+		//$tpl->addPath(__DIR__ . "/templates");
+
 		Template::addPath(__DIR__ . "/templates");
 		$template = Template::loadTemplate("webconsole");
 		$createCustomerForm = Template::renderTemplate("create-customer", array("create" => array()));

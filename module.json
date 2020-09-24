@@ -1,0 +1,24 @@
+{
+	"comment": "Module definition file.",
+	"name": "square",
+	"description": "OCDLA payments.",
+	"files": [
+		"Customer.php",
+		"Order.php",
+		"ShoppingCart.php",
+		"SquarePayment.php",
+        "SquareCustomer.php",
+        "IPaymentProcessor.php",
+        "CartTemplate.php"
+	],
+	"routes": {
+		"customer-form": {
+			"callback":"CreateOrUpdateCustomerForm",
+			"content-type":"text\/html; partial"
+        },
+        "order-summary":{
+            "callback":"OrderSummary",
+            "content-type": "text\/html"
+        }
+    }
+}
