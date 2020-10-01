@@ -9,7 +9,17 @@ use Http\SigningKey as SigningKey;
 use \Html\HtmlLink;
 use function \Html\createElement as createElement;
 
+define("DOM_SECTION_BREAK","<p>&nbsp;</p>");
 
+define("DOM_COMMA",",");
+
+define("DOM_LINE_BREAK","<br />");
+
+define("DOM_SPACE"," ");
+
+
+$instance_url = "https://business-innovation-5996-dev-ed.cs69.my.salesforce.com";
+$access_token = "foobar";
 
 // SQUARE API ENDPOINTS NEEDED
 /*
@@ -22,7 +32,15 @@ use function \Html\createElement as createElement;
 	Create Payment
 */
 class SquareModule extends Module {
-
+  private $oauth_config = array(
+		"oauth_url" => SALESFORCE_LOGIN_URL,
+		"client_id" => SALESFORCE_CLIENT_ID,
+		"client_secret" => SALESFORCE_CLIENT_SECRET,
+		"username" => SALESFORCE_USERNAME,
+		"password" => SALESFORCE_PASSWORD,
+		"security_token" => SALESFORCE_SECURITY_TOKEN,
+		"redirect_uri" => SALESFORCE_REDIRECT_URI
+		);
 
   public function __construct() {
     parent:: __construct();
@@ -257,10 +275,29 @@ class SquareModule extends Module {
 		return $customer;
 	}
 
-	public function OrderSummary(){
-		$tpl = new CartTemplate($_SESSION["cart"]);
+	public function CheckoutReview($OrderId){
+		$tpl = new CartTemplate($_SESSION["cart_id"]);
 		$tpl->addPath(__DIR__ . "/templates");
+
+
+		//a couple of accs
+		//producs
+		//new opportunity with line items
+		//
+		$tpl->bind("order",$this->GetSalesforceOrder());
+		$tpl->bind("card",$this->GetSalesforceCards());
 		return $tpl;
+	}
+	public function GetSalesforceOrder(){
+		$salesforce = new Salesforce($this->oauth_config);
+		return $salesforce->createQueryFromSession("select Id, OrderNumber, BillingAddress, ActivatedDate, TotalAmount,Name,EndDate,".
+		"Description,ShippingAddress,OrderReferenceNumber from Order where AccountId in (select Id from account where Name LIKE '%gino%')");
+	}
+	public function GetSalesforceCards(){
+		$salesforce = new Salesforce($this->oauth_config);
+		return $salesforce->createQueryFromSession("select Id, AccountId, AutoCardType, CardBin, CardCategory, CardHolderFirstName, ".
+					"CardHolderLastName, CardHolderName, CardLastFour, CardType, Comments, CreatedDate, DisplayCardNumber, ExpiryMonth, ExpiryYear, ".
+					"InputCardNumber, NickName, PaymentMethodAddress, Phone, ProcessingMode, Email, Status from CardPaymentMethod");
 	}
 
 	public function CreateOrUpdateCustomerForm(){

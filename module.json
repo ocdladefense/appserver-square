@@ -16,8 +16,8 @@
 			"callback":"CreateOrUpdateCustomerForm",
 			"content-type":"text\/html; partial"
         },
-        "order-summary":{
-            "callback":"OrderSummary",
+        "checkout/review/":{
+            "callback":"CheckoutReview",
             "content-type": "text\/html"
         }
     }

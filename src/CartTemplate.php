@@ -1,5 +1,7 @@
 <?php
 
+
+
 class CartTemplate extends Template {
 
 		// Component styles.
@@ -7,15 +9,16 @@ class CartTemplate extends Template {
 			array(
 				"active" => true,
 				"href" => "/modules/square/assets/css/styles.css",
-			)/*,
-			array(
-				"active" => true,
-				"href" => "/modules/square/assets/css/carCreateStyles.css"
 			),
 			array(
 				"active" => true,
-				"href" => "/content/libraries/view/loading.css"
-			)*/
+				"href" => "/modules/square/assets/css/creditcard.css"
+			),
+			array(
+				"active" => true,
+				"href" => "/modules/square/assets/css/menu.css"
+			)
+			
 		);
 		
 
@@ -39,10 +42,10 @@ class CartTemplate extends Template {
 			//"InfiniteScroller.js", // maybe
 			
 			// all custom below here.
-			//"PageUI.js",
+			"PageUI.js",
 			//"CreateCarUI.js",
-			//"CarCreateModule.js",
-			"module.js"
+			"module.js",
+			"menu.js"
 		);
 
 
@@ -58,7 +61,7 @@ class CartTemplate extends Template {
 				$scripts [] = array("src" => $name);			
 			}
 			foreach($this->module as $name) {
-				$scripts [] = array("src" => "/modules/car/assets/js/".$name);			
+				$scripts [] = array("src" => "/modules/square/assets/js/".$name);			
 			}
 			
 			
