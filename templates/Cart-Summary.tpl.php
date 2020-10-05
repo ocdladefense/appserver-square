@@ -13,29 +13,31 @@
 //amount
 //dates
 //look at object in salesforce
-    if($order != null){
+    if($opportunity != null){
         echo("Order Test: ");
-        foreach($order["records"][0] as $paramName => $value){
+        foreach($opportunity["records"][0] as $paramName => $value){
             echo("Key - ".$paramName.": ".$value."</br>");
         }
     }
     if($card != null){
         echo("Card Test: ");
         foreach($card["records"][0] as $paramName => $value){
-            print("Key - ".$paramName.": ".$value."</br>");
+            //print("Key - ".$paramName.": ".$value."</br>");
             if($paramName == "CardLastFour"){
-                $cardNumber = $value;
+                $lastFour = $value;
                 print("<div id=\"card_num\">".$value."<div>");
             }
+            $cardHolder = ($paramName == "CardHolderName" ?$value:$cardHolder);
+            $expMonth = ($paramName == "ExpiryMonth" ?$value:$expMonth);
+            $expYear = ($paramName == "ExpiryYear" ?$value:$expYear);
         }
     }
 ?>
 
 
-
-
-    <div class="creditcard">
+    <div class="creditcard container">
             <div class="front">
+            <!--<i class="fab fa-cc-discover"></i>-->
                 <div id="ccsingle"></div>
                 <svg version="1.1" id="cardfront" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 750 471" style="enable-background:new 0 0 750 471;" xml:space="preserve">
                     <g id="Front">
@@ -48,13 +50,26 @@
                             </g>
                             <path class="darkcolor greydark" d="M750,431V193.2c-217.6-57.5-556.4-13.5-750,24.9V431c0,22.1,17.9,40,40,40h670C732.1,471,750,453.1,750,431z"></path>
                         </g>
-                        <text transform="matrix(1 0 0 1 60.106 295.0121)" id="svgnumber" class="st2 st3 st4">0123 4567 8910 1112</text>
-                        <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">JOHN DOE</text>
+                        <text transform="matrix(1 0 0 1 60.106 295.0121)" id="svgnumber" class="st2 st3 st4">**** **** **** 
+                        <?php
+                            print($lastFour !=null?$lastFour:"****");
+                        ?>
+                        </text>
+                        <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">
+                        <?php
+                            print($cardHolder !=null?$cardHolder:"Guest");
+                        ?>
+                        </text>
                         <text transform="matrix(1 0 0 1 54.1074 389.8793)" class="st7 st5 st8">cardholder name</text>
                         <text transform="matrix(1 0 0 1 479.7754 388.8793)" class="st7 st5 st8">expiration</text>
                         <text transform="matrix(1 0 0 1 65.1054 241.5)" class="st7 st5 st8">card number</text>
                         <g>
-                            <text transform="matrix(1 0 0 1 574.4219 433.8095)" id="svgexpire" class="st2 st5 st9">01/23</text>
+                            <text transform="matrix(1 0 0 1 574.4219 433.8095)" id="svgexpire" class="st2 st5 st9">
+                            <?php
+                                print(($expMonth !=null?$expMonth:"**")."/"
+                                    .($expYear!=null?substr($expYear, -2):"**"));
+                            ?>
+                            </text>
                             <text transform="matrix(1 0 0 1 479.3848 417.0097)" class="st2 st10 st11">VALID</text>
                             <text transform="matrix(1 0 0 1 479.3848 435.6762)" class="st2 st10 st11">THRU</text>
                             <polygon class="st2" points="554.5,421 540.4,414.2 540.4,427.9 		"></polygon>
@@ -92,8 +107,6 @@
                                 </g>
                             </g>
                         </g>
-                    </g>
-                    <g id="Back">
                     </g>
                 </svg>
             </div>

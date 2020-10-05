@@ -275,7 +275,7 @@ class SquareModule extends Module {
 		return $customer;
 	}
 
-	public function CheckoutReview($OrderId){
+	public function CheckoutReview(){
 		$tpl = new CartTemplate($_SESSION["cart_id"]);
 		$tpl->addPath(__DIR__ . "/templates");
 
@@ -284,14 +284,21 @@ class SquareModule extends Module {
 		//producs
 		//new opportunity with line items
 		//
-		$tpl->bind("order",$this->GetSalesforceOrder());
-		$tpl->bind("card",$this->GetSalesforceCards());
+		//$tpl->bind("opportunity",$this->GetOpportunity());
+		//$tpl->bind("card",$this->GetSalesforceCards());
 		return $tpl;
 	}
-	public function GetSalesforceOrder(){
+
+	public function GetOpportunity($oppId){
 		$salesforce = new Salesforce($this->oauth_config);
-		return $salesforce->createQueryFromSession("select Id, OrderNumber, BillingAddress, ActivatedDate, TotalAmount,Name,EndDate,".
-		"Description,ShippingAddress,OrderReferenceNumber from Order where AccountId in (select Id from account where Name LIKE '%gino%')");
+		$json = array(
+			'OppInfo' => $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where Id = '".$oppId."'"), 
+			'OppLineItems' => $salesforce->createQueryFromSession("select Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice from OpportunityLineItem where OpportunityId = '".$oppId."'")
+		);
+		return($json);
+		//return $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where Id = '".$oppId."'");
+
+		
 	}
 	public function GetSalesforceCards(){
 		$salesforce = new Salesforce($this->oauth_config);

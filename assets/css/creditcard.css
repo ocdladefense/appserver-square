@@ -336,7 +336,6 @@ input {
 
 .creditcard .front,
 .creditcard .back {
-    position: absolute;
     width: 100%;
     max-width: 400px;
     -webkit-backface-visibility: hidden;

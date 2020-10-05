@@ -38,12 +38,9 @@ class CartTemplate extends Template {
 		<!--<script src="/modules/car/assets/js/CreateCarUI.js"></script>
 		<script src="/modules/car/assets/js/CarCreateModule.js"></script>-->
 		*/
-		private $module = array(
-			//"InfiniteScroller.js", // maybe
-			
+		private $module = array(			
 			// all custom below here.
 			"PageUI.js",
-			//"CreateCarUI.js",
 			"module.js",
 			"menu.js"
 		);

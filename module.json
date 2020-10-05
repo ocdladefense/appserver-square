@@ -12,9 +12,9 @@
         "CartTemplate.php"
 	],
 	"routes": {
-		"customer-form": {
-			"callback":"CreateOrUpdateCustomerForm",
-			"content-type":"text\/html; partial"
+		"opportunity/%oppId": {
+			"callback":"GetOpportunity",
+			"content-type":"application\/json"
         },
         "checkout/review/":{
             "callback":"CheckoutReview",
