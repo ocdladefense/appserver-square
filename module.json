@@ -16,9 +16,17 @@
 			"callback":"GetOpportunity",
 			"content-type":"application\/json"
         },
-        "checkout/review/":{
+        "checkout/review":{
             "callback":"CheckoutReview",
             "content-type": "text\/html"
-        }
+		},
+		"order/%orderId":{
+			"callback":"OrderPreview",
+			"content-type": "text\/html"
+		},
+		"order":{
+			"callback":"OrderPreview",
+			"content-type": "text\/html"
+		}
     }
 }

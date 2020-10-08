@@ -2,17 +2,17 @@
 
 
 
-class CartTemplate extends Template {
+class OrderTemplate extends Template {
 
 		// Component styles.
 		private $css = array(
 			array(
 				"active" => true,
-				"href" => "/modules/square/assets/css/styles.css",
+				"href" => "/modules/square/assets/css/creditcard.css",
 			),
 			array(
 				"active" => true,
-				"href" => "/modules/square/assets/css/creditcard.css"
+				"href" => "/modules/square/assets/css/sq-payment-form.css"
 			),
 			array(
 				"active" => true,
@@ -29,19 +29,13 @@ class CartTemplate extends Template {
 
 		private $module = array(			
 			// all custom below here.
-			"PageUI.js",
-			"module.js",
-			"menu.js",
-			"OrderUI.js",
-			"modal.js",
-			"LineComponents.js",
-			"creditCardTemplate.js"
+			"sq-payment-form"
 		);
 
 
 
-		public function __construct($cart) {
-			parent::__construct("Cart-Summary");
+		public function __construct($orderNumb) {
+			parent::__construct("Order-Summary/".$orderNumb);
 			
 			$this->addStyles($this->css);
 

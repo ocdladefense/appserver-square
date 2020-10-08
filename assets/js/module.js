@@ -18,21 +18,24 @@ function getSObjectRequest(json, url) {
     return new Request(url, init);
 }
 
-async function getSObject(json,url){
-    let req = getSObjectRequest(json, url);
-    let response = fetch(req);
-    response.then(async(resp) => {
-        //return await resp.json();
-        let page = new PageUI(await resp.json());
-        page.render();
+function send(body,url){
+    let req = getSObjectRequest(body, url);
+    let callout = fetch(req);
+    return callout.then((resp) => {
+        return resp.json();
     });
 }   
 
 
-
 window.onload = () => {
     //page = new PageUI();
-    opportunity = getSObject("","/opportunity/0063h000009tv58AAA");
+    callout = send(null,"/opportunity/0063h000009tv58AAA").then(function (opp){
+        let page = new PageUI(opp);
+        document.body.classList.add("loading");
+        page.render();
+        page.modal(checkoutCreateModal);
+        document.body.classList.remove("loading");
+    });
     //page.render();
     //$(document).ready(function(){ 
         var touch 	= $('#resp-menu');

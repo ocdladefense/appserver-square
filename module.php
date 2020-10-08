@@ -297,9 +297,17 @@ class SquareModule extends Module {
 		);
 		return($json);
 		//return $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where Id = '".$oppId."'");
-
-		
 	}
+
+	public function OrderPreview($orderId){
+		$tpl = new OrderTemplate();
+		if($orderId == null){
+			$tpl = new OrderTemplate($orderId);
+		}
+		//$tpl = new OrderTemplate();
+		return $tpl;
+	}
+
 	public function GetSalesforceCards(){
 		$salesforce = new Salesforce($this->oauth_config);
 		return $salesforce->createQueryFromSession("select Id, AccountId, AutoCardType, CardBin, CardCategory, CardHolderFirstName, ".

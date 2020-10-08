@@ -13,11 +13,19 @@
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
-    min-height: 100vh;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
     font-family: 'Raleway';
 }
+.creditcard .container::-webkit-scrollbar {
+    display: none;
+}
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+.creditcard .container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 
 .payment-title {
     width: 100%;
