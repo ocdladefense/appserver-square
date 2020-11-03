@@ -2,10 +2,11 @@
  * Define callback function for "sq-button"
  * @param {*} event
  */
-function onGetCardNonce(event) {
+function onGetCardNonce(this,event) {
 
     // Don't submit the form until SqPaymentForm returns with a nonce
     event.preventDefault();
+    document.getElementById(this.id).disabled = true;
   
     // Request a nonce from the SqPaymentForm object
     paymentForm.requestCardNonce();
@@ -15,9 +16,10 @@ function onGetCardNonce(event) {
   // initializing various configuration fields and providing implementation for callback functions.
   var paymentForm = new SqPaymentForm({
     // Initialize the payment form elements
-    applicationId: applicationId,
-    locationId: locationId,
+    applicationId: "sandbox-sq0idb-MMFyCsOxdv0jl5Pcj0RO-g",
+    locationID = "locationID",
     inputClass: 'sq-input',
+    autoBuild: false,
   
     // Customize the CSS for SqPaymentForm iframe elements
     inputStyles: [{
@@ -106,120 +108,17 @@ function onGetCardNonce(event) {
        */
       createPaymentRequest: function () {
   
-        var paymentRequestJson = {
-          requestShippingAddress: false,
-          requestBillingInfo: true,
-          shippingContact: {
-            familyName: "CUSTOMER LAST NAME",
-            givenName: "CUSTOMER FIRST NAME",
-            email: "mycustomer@example.com",
-            country: "USA",
-            region: "CA",
-            city: "San Francisco",
-            addressLines: [
-              "1455 Market St #600"
-            ],
-            postalCode: "94103",
-            phone:"14255551212"
-          },
-          currencyCode: "USD",
-          countryCode: "US",
-          total: {
-            label: "MERCHANT NAME",
-            amount: "1.00",
-            pending: false
-          },
-          lineItems: [
-            {
-              label: "Subtotal",
-              amount: "1.00",
-              pending: false
-            }
-          ]
-        };
-  
-        return paymentRequestJson;
-      },
-  
-      /*
-       * callback function: validateShippingContact
-       * Triggered when: a shipping address is selected/changed in a digital
-       *                 wallet UI that supports address selection.
-       */
-      validateShippingContact: function (contact) {
-  
-        var validationErrorObj ;
-        /* ADD CODE TO SET validationErrorObj IF ERRORS ARE FOUND */
-        return validationErrorObj ;
-      },
-  
-      /*
-       * callback function: cardNonceResponseReceived
-       * Triggered when: SqPaymentForm completes a card nonce request
-       */
-      cardNonceResponseReceived: function(errors, nonce, cardData, billingContact, shippingContact) {
-        if (errors){
-          var error_html = "";
-          for (var i =0; i < errors.length; i++){
-            error_html += "<li> " + errors[i].message + " </li>";
+        cardNonceResponseReceived: function (errors, nonce, cardData) {
+          if (errors) {
+              // Log errors from nonce generation to the browser developer console.
+              console.error('Encountered errors:');
+              errors.forEach(function (error) {
+                  console.error('  ' + error.message);
+              });
+              alert('Encountered errors, check browser developer console for more details');
+               return;
           }
-          document.getElementById("error").innerHTML = error_html;
-          document.getElementById('sq-creditcard').disabled = false;
-  
-          return;
-        }else{
-          document.getElementById("error").innerHTML = "";
-        }
-  
-        // Assign the nonce value to the hidden form field
-        document.getElementById('card-nonce').value = nonce;
-  
-        // POST the nonce form to the payment processing page
-        document.getElementById('nonce-form').submit();
-  
-      },
-  
-      /*
-       * callback function: unsupportedBrowserDetected
-       * Triggered when: the page loads and an unsupported browser is detected
-       */
-      unsupportedBrowserDetected: function() {
-        /* PROVIDE FEEDBACK TO SITE VISITORS */
-      },
-  
-      /*
-       * callback function: inputEventReceived
-       * Triggered when: visitors interact with SqPaymentForm iframe elements.
-       */
-      inputEventReceived: function(inputEvent) {
-        switch (inputEvent.eventType) {
-          case 'focusClassAdded':
-            /* HANDLE AS DESIRED */
-            break;
-          case 'focusClassRemoved':
-            /* HANDLE AS DESIRED */
-            break;
-          case 'errorClassAdded':
-            /* HANDLE AS DESIRED */
-            break;
-          case 'errorClassRemoved':
-            /* HANDLE AS DESIRED */
-            break;
-          case 'cardBrandChanged':
-            /* HANDLE AS DESIRED */
-            break;
-          case 'postalCodeChanged':
-            /* HANDLE AS DESIRED */
-            break;
-        }
-      },
-  
-      /*
-       * callback function: paymentFormLoaded
-       * Triggered when: SqPaymentForm is fully loaded
-       */
-      paymentFormLoaded: function() {
-        /* HANDLE AS DESIRED */
-      }
+             alert(`The generated nonce is:\n${nonce}`);
+          }
     }
   });

@@ -7,6 +7,8 @@ use Http\HttpMessage as HttpMessage;
 use Http\SigningRequest as SigningRequest;
 use Http\SigningKey as SigningKey;
 use \Html\HtmlLink;
+use SquareConnect\Model\Checkout;
+
 use function \Html\createElement as createElement;
 
 define("DOM_SECTION_BREAK","<p>&nbsp;</p>");
@@ -20,7 +22,7 @@ define("DOM_SPACE"," ");
 
 $instance_url = "https://business-innovation-5996-dev-ed.cs69.my.salesforce.com";
 $access_token = "foobar";
-
+//MOVE CART OPERATION TO ANOTHER MODULE
 // SQUARE API ENDPOINTS NEEDED
 /*
 	Create Customer
@@ -275,39 +277,6 @@ class SquareModule extends Module {
 		return $customer;
 	}
 
-	public function CheckoutReview(){
-		$tpl = new CartTemplate($_SESSION["cart_id"]);
-		$tpl->addPath(__DIR__ . "/templates");
-
-
-		//a couple of accs
-		//producs
-		//new opportunity with line items
-		//
-		//$tpl->bind("opportunity",$this->GetOpportunity());
-		//$tpl->bind("card",$this->GetSalesforceCards());
-		return $tpl;
-	}
-
-	public function GetOpportunity($oppId){
-		$salesforce = new Salesforce($this->oauth_config);
-		$json = array(
-			'OppInfo' => $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where Id = '".$oppId."'"), 
-			'OppLineItems' => $salesforce->createQueryFromSession("select Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice from OpportunityLineItem where OpportunityId = '".$oppId."'")
-		);
-		return($json);
-		//return $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where Id = '".$oppId."'");
-	}
-
-	public function OrderPreview($orderId){
-		$tpl = new OrderTemplate();
-		if($orderId == null){
-			$tpl = new OrderTemplate($orderId);
-		}
-		//$tpl = new OrderTemplate();
-		return $tpl;
-	}
-
 	public function GetSalesforceCards(){
 		$salesforce = new Salesforce($this->oauth_config);
 		return $salesforce->createQueryFromSession("select Id, AccountId, AutoCardType, CardBin, CardCategory, CardHolderFirstName, ".
@@ -453,5 +422,22 @@ class SquareModule extends Module {
 
 
 		exit;
+	}
+	
+	public function setInactiveCard($cardId){
+		$salesforce = new Salesforce($this->oauth_config);
+		$card = new stdclass();
+		$card->Status = "Inactive";
+		return $salesforce->updateRecordFromSession("CardPaymentMethod",$cardId,json_encode($card));
+	}
+	public function deleteCard($cardId){
+		$salesforce = new Salesforce($this->oauth_config);
+
+		return $salesforce->deleteRecordFromSession("CardPaymentMethod",$cardId);
+	}
+	public function DeleteCartItem($cartItemNumb){
+		$salesforce = new Salesforce($this->oauth_config);
+
+		return $salesforce->deleteRecordFromSession("OpportunityLineItem",$cartItemNumb);
 	}
 }

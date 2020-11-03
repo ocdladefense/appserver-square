@@ -14,26 +14,48 @@ class PageUI extends BaseComponent {
                                 //.foreach
     }
     render() {
-        let headingVNode = vNode("h2",{},"Cart");
         const lineItems= this.lineItems["records"];
-        let itemCount = vNode("span",{className:"count"},lineItems.length+" item(s) in the cart");
-
         const LineComponent = LineComponents(lineItems);
+        let countElement = createElement(vNode("span",{className:"count"},lineItems.length+" item(s) in the cart"));
+        
         
         let checkoutbtnVNode = vNode("a",{id:"checkoutModal", className:"car-link-btn"},
             vNode("span",{},"Checkout"));
 
-        let completeVNode = vNode("div",{},[headingVNode,itemCount,LineComponent,checkoutbtnVNode]);
+        let notificationvNode = vNode("div",{className:"notification-container bottom-left",hidden:"true"},[
+            vNode("div",{class:"notification toast bottom-left",style:"background-color: #5bc0de;padding-bottom: 50px;"},[
+                vNode("div",{class:"notification-image"},
+                    vNode("img",{id:"notification-image", src:"{!URLFOR($Resource.info)}", alt:""},)),
+                vNode("div",{},[
+                    vNode("p",{className:"notification-title"},"Title"),
+                    vNode("p",{className:"notification-message"},"Message")
+                ])
+            ])
+        ])
 
-        var pageElement = createElement(completeVNode);
-        
-        document.getElementById('body').appendChild(pageElement);
+        let cartVNode = vNode("div",{},[LineComponent,checkoutbtnVNode,notificationvNode]);
+
+        var cartElement = createElement(cartVNode); 
+        document.getElementById('cart').removeChild(document.getElementById('cart').childNodes[1]);
+        document.getElementById('count').innerHTML = "";
+        document.getElementById('count').appendChild(countElement);
+        document.getElementById('cart').appendChild(cartElement);
     } 
 
     modal(callback){
         document.getElementById("checkoutModal").addEventListener("click", (e) => {
             e.preventDefault();
             callback();
+        });
+    }
+    removeCartItem(callback){
+        let elements = document.getElementsByName("removeItem");
+        elements.forEach((element,index)=>{
+            renderRemoveCartSvg(element);
+            element.addEventListener("click",(e)=>{
+                e.preventDefault();
+                callback(element);
+            });
         });
     }
 

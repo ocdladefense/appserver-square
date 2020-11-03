@@ -1,11 +1,14 @@
+let orderMenuTab;
+
 function buildModalForm() {
     document.body.classList.add("loading");
 
     //myModal = modal;
+    orderMenuTab = "checkout";
 
     document.getElementById('modal-content').innerHTML = "";
 
-    modalForm = new OrderUI();
+    modalForm = new OrderUI(null);
     modal.render(modalForm.render());
 
     modal.cancel = function () {
@@ -13,9 +16,40 @@ function buildModalForm() {
     };
     document.getElementById("cancelOrder").addEventListener("click", modal.cancel);
     document.getElementById("current-card").innerHTML = creditCardTemplate();
+    document.getElementsByName("changeOrder").forEach(function(element){
+        element.addEventListener(("click"),changeOrderPage,false);
+    })
     modal.show();
     //modalForm.styleForm(900);
     document.body.classList.remove("loading");
+
+}
+
+function changeOrderPage(){
+    let attribute = this.getAttribute("ordermenu");
+    switch(attribute){
+        case "checkout":
+            document.getElementById(orderMenuTab).classList.remove("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = true;
+            orderMenuTab = "checkout";
+            document.getElementById(orderMenuTab).classList.add("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = false;
+            break;
+        case "billing":
+            document.getElementById(orderMenuTab).classList.remove("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = true;
+            orderMenuTab = "billing";
+            document.getElementById(orderMenuTab).classList.add("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = false;
+            break;
+        default:
+            document.getElementById(orderMenuTab).classList.remove("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = true;
+            orderMenuTab = "checkout";
+            document.getElementById(orderMenuTab).classList.add("homer");
+            document.getElementById(orderMenuTab+"-body").hidden = false;
+            break;
+    }
 }
 
 function closeModalForm() {
@@ -25,7 +59,21 @@ function closeModalForm() {
 
 function checkoutCreateModal(){
     let response = buildModalForm();
-    response.then(() => {
+    var touch 	= $('.responsive-menu');
+    var menu 	= $('.menu');
+ 
+    $(touch).on('click', function(e) {
+        e.preventDefault();
+        menu.slideToggle();
+    });
+    
+    $(window).resize(function(){
+        var w = $(window).width();
+        if(w > 767 && menu.is(':hidden')) {
+            menu.removeAttr('style');
+        }
+    });
+    //response.then(() => {
         // myModal.confirm = function () {
         //     let carCondition = DBQuery.createCondition("id", "(SQL)(SELECT max(id) FROM car)");
         //     let newCarResponse = FormSubmission.send("/car-load-more", JSON.stringify([carCondition]));
@@ -46,5 +94,5 @@ function checkoutCreateModal(){
         // parser.setSettings(formSettings);
 
         //modalForm.onFormSubmit(() => { submitForm("/car-insert"); });
-    });
+    //});
 }

@@ -1,10 +1,13 @@
 <?php
 
-class ShoppingCart {
+use \Http\IJson as IJson;
+class ShoppingCart3 implements IJson{
 
     private $items;
     private $total;
     private $currency;
+
+
 
     public function __construct($currency = "USD") {
         $this->total = $total;
@@ -66,6 +69,22 @@ class ShoppingCart {
 		$cart->setCurrency($params->currency ?: "USD");
 
 		return $cart;
-	}
+    }
+    // public static function newFromCustomerId($customerId){
+
+	// 	$response = $salesforce->createRecordFromSession("Opportunity",json_encode($customerId));
+	// 	$response = json_decode($response);
+	// 	if($response->success){
+	// 		$_SESSION["cartId"] = $response->id;
+	// 		return $response->id;
+	// 	}else{
+	// 		//throw new Exception("");
+	// 		return $response;
+	// 	}
+    // }
+
+    public function toJson(){
+        
+    }
 
 }

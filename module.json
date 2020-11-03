@@ -12,14 +12,6 @@
         "CartTemplate.php"
 	],
 	"routes": {
-		"opportunity/%oppId": {
-			"callback":"GetOpportunity",
-			"content-type":"application\/json"
-        },
-        "checkout/review":{
-            "callback":"CheckoutReview",
-            "content-type": "text\/html"
-		},
 		"order/%orderId":{
 			"callback":"OrderPreview",
 			"content-type": "text\/html"
@@ -27,6 +19,18 @@
 		"order":{
 			"callback":"OrderPreview",
 			"content-type": "text\/html"
+		},
+		"cart/deleteItem/%cartItem":{
+			"callback":"DeleteCartItem",
+			"content-type":"application\/json"
+		},
+		"checkout/setInactiveCard/%cardId":{
+			"callback":"setInactiveCard",
+			"content-type":"application\/json"
+		},
+		"checkout/deleteCard/%cardId":{
+			"callback":"deleteCard",
+			"content-type":"application\/json"
 		}
     }
 }

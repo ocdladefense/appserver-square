@@ -92,6 +92,7 @@ input {
 
 /* CREDIT CARD IMAGE STYLING */
 .preload * {
+    transition: none !important;
     -webkit-transition: none !important;
     -moz-transition: none !important;
     -ms-transition: none !important;
@@ -339,7 +340,6 @@ input {
     -webkit-transition: -webkit-transform 0.6s;
     transition: transform 0.6s;
     transition: transform 0.6s, -webkit-transform 0.6s;
-    cursor: pointer;
 }
 
 .creditcard .front,

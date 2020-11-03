@@ -1,3 +1,8 @@
+#modal{
+  width: unset;
+  top: 30%;
+}
+
 .form-item-required label:after{
     content: "*";
     color: red;
@@ -136,14 +141,10 @@
   }
   
   .container {
-    margin: 0 auto;
-    overflow: auto;
+    height: unset !important;
   }
   
   /* --- HEADER --- */
-  header.container {
-    margin-bottom: 1.5rem;
-  }
   
   header .breadcrumb {
     color: #7d7d7d;
@@ -218,13 +219,13 @@
   }
   
   .quantity, .remove {
-    width: 50%;
     text-align: center;
   }
   
   .remove svg {
     width: 60px;
     height: 60px;
+    margin-left: 30px;
   }
   
   .quantity > input {
