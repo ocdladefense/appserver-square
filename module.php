@@ -424,20 +424,5 @@ class SquareModule extends Module {
 		exit;
 	}
 	
-	public function setInactiveCard($cardId){
-		$salesforce = new Salesforce($this->oauth_config);
-		$card = new stdclass();
-		$card->Status = "Inactive";
-		return $salesforce->updateRecordFromSession("CardPaymentMethod",$cardId,json_encode($card));
-	}
-	public function deleteCard($cardId){
-		$salesforce = new Salesforce($this->oauth_config);
 
-		return $salesforce->deleteRecordFromSession("CardPaymentMethod",$cardId);
-	}
-	public function DeleteCartItem($cartItemNumb){
-		$salesforce = new Salesforce($this->oauth_config);
-
-		return $salesforce->deleteRecordFromSession("OpportunityLineItem",$cartItemNumb);
-	}
 }
